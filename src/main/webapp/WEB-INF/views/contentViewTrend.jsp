@@ -61,25 +61,28 @@
 
 <body>
 
-	<!-- 콘텐츠 헤더 부분 -->
-	<div class="header" style="display: flex; align-items: center; justify-content: space-around; width: 100%;">
-		<img class="logo" alt="logo" src="./images/tag_logo1.png" onclick="location.href='index'" style="max-height: 80px;">
-		
-		<div style="display: flex; justify-content: center; flex-grow: 1;">
-			<button type="button" class="btn btn-outline-dark" style="width: 50%;" onclick="location.href='list'"><i class="bi bi-list">Trend</i></button>
-		</div>
-		
-		<div id="searchbox" style="display: none;">
-			<form id="search" action="search" method="post">
-				<div style="display: flex;">
-					<input type="text" class="form-control" name="searchval" maxlength="10" placeholder="Search">
-					<button type="submit" class="btn btn-outline-light">Search</button>
-				</div>
-			</form>
-		</div>
-		<div style="width: 10rem;">
+<!-- 콘텐츠 헤더 부분 -->
+<div class="header" style="display: flex; align-items: center; justify-content: space-around; width: 100%;">
+	<img class="logo" alt="logo" src="./images/tag_logo1.png" onclick="location.href='index'" style="max-height: 80px;">
+	<div style="display: flex; justify-content: center; flex-grow: 1;">
+		<button type="button" class="btn btn-outline-dark" style="width: 25%;" onclick="location.href='index'"><i class="bi bi-house">Index</i></button>
+		<button type="button" class="btn btn-outline-dark" style="width: 25%;" onclick="location.href='list'"><i class="bi bi-list">Trend</i></button>
+		<button type="button" class="btn btn-outline-dark" style="width: 25%;" onclick="location.href='list2'"><i class="bi bi-joystick">Games</i></button>
+	</div>
+	
+	<div id="searchbox" style="display: none;">
+		<form id="search" action="search" method="post">
+			<div style="display: flex;">
+				<input type="text" class="form-control" style="width: 10rem;" name="searchval" maxlength="10" placeholder="Search">
+				<button type="submit"
+					style="-webkit-backdrop-filter: invert(100%);
+					backdrop-filter: invert(100%);"
+					class="btn btn-outline-light">Search</button>
+			</div>
+		</form>
+	</div>
+		<div style="width: 7.5rem;">
 			<button type="button" class="btn btn-outline-dark" onclick="showsearchbox()"><i class="bi bi-search"></i></button>
-			<button type="button" class="btn btn-outline-dark" onclick="location.href='./list2'"><i class="bi bi-joystick"></i></button>
 			<button type="button" class="btn btn-outline-dark" onclick="showloginbox()"><i class="bi bi-person"></i></button>
 		</div>
 	</div>
@@ -348,17 +351,17 @@
 					}
 				%>
 				<!-- 슬라이드 -->
-				<div class="container text-center" style="width: 100%; height: 550px;">
+				<div class="container text-center" style="width: 100%; height: 500px;">
 					<div id="trend" class="mx-3 carousel slide" data-bs-ride="carousel" style="width: 97%">
 						<div class="carousel-indicators">
 				  	  		<button type="button" data-bs-target="#trend" data-bs-slide-to="0" class="active" style="background-color: black;"></button>
 						  	<c:forEach var="i" begin="1" end="<%=imageFiles.size()%>">
 							  	<button type="button" data-bs-target="#trend" data-bs-slide-to="${i}" style="background-color: black;"></button>
-						  	</c:forEach>  
+						  	</c:forEach>
 					  	</div>
 						<div class="carousel-inner text-center align-middle">
 							<div class="carousel-item active">
-								<img src="./images/<%= tnum %>.png" alt="<%= tnum %>" class="container px-2 d-flex justify-content-center d-block w-60" style="width: 70%; height: 500px;" />
+								<img src="./images/<%= tnum %>.png" alt="<%= tnum %>" class="container px-2 d-flex justify-content-center d-block w-60" style="width: 70%; height: 480px;" />
 							</div>
 							<%
 								for (String fileName : imageFiles) {
@@ -422,13 +425,14 @@
 		        %>  --%>
 
 				<%-- <br /><br /><p>${vo.maintext}</p><br /><br /> --%>
+				<br/>
 				<p class="d-flex justify-content-end">작성일: ${tdate}</p>
 				<p class="d-flex justify-content-end">작성자: ${vo.writer}</p>
 			</div>
+			
 			<!-- 좋아요, 스크랩, 공유, 목록보기 -->
 			<div class="container px-2 d-flex justify-content-center" style="font-size: 120%;">
 				<p>
-				
 					<!-- 로그인 되어있지 않은 경우 -->
 					<c:if test="<%=nickname == null %>">
 						<button class="btn" type="button" onclick="like();">
@@ -460,16 +464,7 @@
 							<i class="bi bi-bookmark" style="color: blue;"></i>
 						</button>
 					</c:if>
-					
-					<button class="btn" type="button" onclick="goodCHK(${vo.tnum},${vo.lnum},<%=nickname%>)">
-						<i class="bi bi-heart" style="color: red;"></i>&nbsp;${vo.lnum}
-					</button>
 					&nbsp;&nbsp;&nbsp;
-					<button class="btn" type="button" onclick="location.href='scrap?tnum=${vo.tnum}'">
-						<i class="bi bi-bookmark" style="color: blue;"></i>
-					</button>
-					&nbsp;&nbsp;&nbsp;
-					<!-- <button class="btn" type="button" onclick="clip(); return false;"><i class="bi bi-share-fill"></i>(링크복사)</button> -->
 					<button class="btn" type="button" value="링크복사" onclick="clip(); return false;">
 						<i class="bi bi-share-fill"></i>&nbsp;(링크복사)
 					</button>
@@ -487,7 +482,7 @@
 					
 					<!-- 로그인 되어있지 않은 경우 -->
 					<c:if test="<%=nickname == null %>">
-					<div class="container px-lg-2 d-flex justify-content-center" style="background-color: peachpuff;">
+					<div class="container px-lg-2 d-flex justify-content-center">
 						<textarea rows="2" cols="8" placeholder="댓글을 작성하려면 로그인 해주세요." style="width: 60%; border-radius: 6px;" disabled></textarea>
 						&nbsp;&nbsp;<button class="btn btn-outline-success" disabled>등록</button>
 					</div><br/>
@@ -495,7 +490,7 @@
 
 					<!-- 로그인 되어있는 경우 -->
 					<c:if test="<%=nickname != null %>">
-					<div class="container px-lg-2 d-flex justify-content-center" style="background-color: peachpuff;">
+					<div class="container px-lg-2 d-flex justify-content-center">
 						<textarea rows="3" cols="8" name="memo" style="width: 60%; border-radius: 6px; resize: none;"></textarea> &nbsp;&nbsp;
 						<button class="btn btn-outline-success" type="submit" name="commentForm" style="width: 7%">등록</button>
 					</div><br />

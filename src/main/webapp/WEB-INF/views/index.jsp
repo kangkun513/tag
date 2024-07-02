@@ -150,8 +150,8 @@
 <script type="text/javascript" src="./js/Account.js" defer="defer" charset="UTF-8"></script>
 </head>
 <body>
-	<!-- 헤더 영역 -->
-	<div class="header" style="display: flex; align-items: center; justify-content: space-around; width: 100%;">
+<!-- 헤더 영역 -->
+<div class="header" style="display: flex; align-items: center; justify-content: space-around; width: 100%;">
 	<img class="logo" alt="logo" src="./images/tag_logo1.png" onclick="location.href='index'" style="max-height: 80px;">
 	<div style="display: flex; justify-content: center; flex-grow: 1;">
 		<button type="button" class="btn btn-outline-dark" style="width: 35%;" onclick="location.href='list'"><i class="bi bi-list">Trend</i></button>
@@ -399,16 +399,19 @@
 	</div>
 
 
-<c:if test="${searchNum == 0}">
+<!-- DB Trend list -->
+<c:set var="trendlist" value="${trendList.list}"/>
+
+<!-- 컨텐츠가 없을 경우 -->
+<c:if test="${trendlist.size() == 0}">
 	<div style="width: 100%; text-align: center;">
-		<span class="title">검색 결과가 없습니다</span>
+		<span class="title">컨텐츠가 없습니다</span>
 	</div>
 </c:if>
 
+	
 <!-- 컨텐츠 목록 부분 -->
 <div class="container-fluid" style="display: flex; justify-content: center;">
-	<!-- DB Trend list -->
-	<c:set var="trendlist" value="${trendList.list}"/>
 	
 	<!-- 컨텐츠 왼쪽 영역(왼쪽 3개 박스) -->
 	<div style="display: grid;

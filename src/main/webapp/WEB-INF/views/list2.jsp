@@ -31,6 +31,11 @@
 	    -webkit-user-select: none;
 	    -ms-user-select: none;
 	}
+	
+	.btn {
+		-webkit-backdrop-filter: contrast(200%); 
+		backdrop-filter: contrast(200%);
+	}
 
 </style>
 <link rel="stylesheet" href="./css/list.css" />
@@ -308,10 +313,9 @@
 					}
 					colorcode += "A8";
 				%>
-				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; background-color: <%=colorcode %>">
-					<div class="container-fluid h-75 text-center align-middle">
-						<h2 class="title">업다운 게임</h2>			
-					</div>
+				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" 
+					style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; background-color: <%=colorcode %>">
+					<h2 class="title">업다운 게임</h2>			
 					<a class="stretched-link text-decoration-none text-black" href="./updown">
 						<span class="title fw-bold">숫자를 맞춰보세요!</span><br/>
 					</a>
@@ -324,10 +328,9 @@
 					}
 					colorcode += "A8";
 				%>
-				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; background-color: <%=colorcode %>">
-					<div class="container-fluid h-75 text-center align-middle">
-						<h2 class="title">가위바위보 게임</h2>			
-					</div>
+				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" 
+					style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; background-color: <%=colorcode %>">
+					<h2 class="title">가위바위보 게임</h2>			
 					<a class="stretched-link text-decoration-none text-black" href="./rps">
 						<span class="title fw-bold">컴퓨터를 이겨보세요!</span><br/>
 					</a>
@@ -340,10 +343,9 @@
 					}
 					colorcode += "A8";
 				%>
-				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; background-color: <%=colorcode %>">
-					<div class="container-fluid h-75 text-center align-middle">
-						<h2 class="title">숫자야구 게임</h2>			
-					</div>
+				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" 
+					style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; background-color: <%=colorcode %>">
+					<h2 class="title">숫자야구 게임</h2>			
 					<a class="stretched-link text-decoration-none text-black" href="./numbaseball">
 						<span class="title fw-bold">레벨별로 도전하세요!</span><br/>
 					</a>
@@ -356,10 +358,9 @@
 					}
 					colorcode += "A8";
 				%>
-				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; background-color: <%=colorcode %>">
-					<div class="container-fluid h-75 text-center align-middle">
-						<h2 class="title">야바위 게임</h2>			
-					</div>
+				<div class="cont text-center my-3 rounded-5 container-fluid position-relative" 
+					style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; background-color: <%=colorcode %>">
+					<h2 class="title">야바위 게임</h2>			
 					<a class="stretched-link text-decoration-none text-black" href="./yabaui">
 						<span class="title fw-bold">공이 어딨는지 맞춰보세요!</span><br/>
 					</a>
@@ -372,7 +373,7 @@
 				<c:if test="${list.size() == 0}">
 		 			<div class="table-danger">
 		 				<div>
-		 					<marquee>트렌드 컨텐츠가 없습니다.</marquee>
+		 					<marquee>게임 컨텐츠가 없습니다.</marquee>
 		 				</div>
 		 			</div>
 		 		</c:if>
@@ -392,10 +393,9 @@
 					%>
 		 			<!-- 인덱스 0~8 (9개) 보이게 model로 넘어온 viewcount 활용 -->
 		 			<c:if test="${view.index < 9}">
-		 			<div class="cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; background-color: <%=colorcode %>">
-						<div class="container-fluid h-75 text-center align-middle">
-							<h2 class="title">${vo.tnum}번 글</h2>			
-						</div>
+		 			<div class="cont text-center my-3 rounded-5 container-fluid position-relative" 
+		 				style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; background-color: <%=colorcode %>">
+						<span class="fw-bold">${vo.tnum}번 글</span>			
 						<a class="stretched-link text-decoration-none text-black" href="./selectByTnum?tnum=${vo.tnum}">
 							<span class="title fw-bold">${vo.title}</span><br/>
 						</a>
@@ -405,7 +405,8 @@
 		 			</c:if>
 		 			<!-- 인덱스 9 이상 안 보이게 하기 -->
 		 			<c:if test="${view.index >= 9}">
-		 			<div class="trc cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; display: none; background-color: <%=colorcode %>">
+		 			<div class="trc cont text-center my-3 rounded-5 container-fluid position-relative" 
+		 				style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; display: none; background-color: <%=colorcode %>">
 						<div class="container-fluid h-75 text-center align-middle">
 							<h2 class="title">${vo.tnum}번 글</h2>			
 						</div>
@@ -418,16 +419,6 @@
 		 			</c:if>
 		 			</c:forEach>
 		 		</c:if><!-- 리스트 출력 끝 -->
-			</div>
-			<div id="morediv" class="container text-center align-items-center my-3">
-				<button id="morebtn"
-				class="btn btn-danger" 
-				type="button" 
-				title="콘텐츠 6개 더보기"
-				onclick="setViewcount()">더보기 <i class="bi bi-chevron-down"></i></button>
-				<!-- 더보기 변수 -->
-				<input id="morecount" value=0 type="hidden"/><!-- 더보기 시작번호 -->
-				<input id="last" value="${trendList.totalCount}" type="hidden"/><!-- 모든댓글 수 -->
 			</div>
 		</div>
 

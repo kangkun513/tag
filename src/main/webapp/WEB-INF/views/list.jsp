@@ -31,6 +31,11 @@
 	    -webkit-user-select: none;
 	    -ms-user-select: none;
 	}
+	
+	.btn {
+		-webkit-backdrop-filter: contrast(200%); 
+		backdrop-filter: contrast(200%);
+	}
 
 </style>
 <link rel="stylesheet" href="./css/list.css" />
@@ -325,12 +330,11 @@
 					%>
 		 			<!-- 인덱스 0~8 (9개) 보이게 model로 넘어온 viewcount 활용 -->
 		 			<c:if test="${view.index < 9}">
-		 			<div class="cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; background-color: <%=colorcode %>">
-						<div class="container-fluid h-75 text-center align-middle">
-							<h2 class="title">${vo.tnum}번 글</h2>			
-						</div>
+		 			<div class="cont text-center my-3 rounded-5 container-fluid position-relative" 
+		 				style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; background-color: <%=colorcode %>">
+						<span class="fw-bold">${vo.tnum}번 글</span>		
 						<a class="stretched-link text-decoration-none text-black" href="./selectByTnum?tnum=${vo.tnum}">
-							<span class="title fw-bold">${vo.title}</span><br/>
+							<span class="title ttext1">${vo.title}</span><br/>
 						</a>
 						<span class="fw-bold">조회수: ${vo.views}</span> / 
 						<span class="fw-bold">댓글수: ${vo.ccount}</span>
@@ -338,12 +342,11 @@
 		 			</c:if>
 		 			<!-- 인덱스 9 이상 안 보이게 하기 -->
 		 			<c:if test="${view.index >= 9}">
-		 			<div class="trc cont text-center my-3 rounded-5 container-fluid position-relative" style="width: 30%; height: 25dvh; display: none; background-color: <%=colorcode %>">
-						<div class="container-fluid h-75 text-center align-middle">
-							<h2 class="title">${vo.tnum}번 글</h2>			
-						</div>
+		 			<div class="trc cont text-center my-3 rounded-5 container-fluid position-relative" 
+		 				style="width: 30%; min-width: 200px; height: 25dvh; min-height: 160px; display: none; background-color: <%=colorcode %>">
+						<span class="fw-bold">${vo.tnum}번 글</span>			
 						<a class="stretched-link text-decoration-none text-black" href="./selectByTnum?tnum=${vo.tnum}">
-							<span class="title fw-bold">${vo.title}</span><br/>
+							<span class="title ttext1">${vo.title}</span><br/>
 						</a>
 						<span class="fw-bold">조회수: ${vo.views}</span> / 
 						<span class="fw-bold">댓글수: ${vo.ccount}</span>
