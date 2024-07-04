@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	실행할 sql 명령이 저장된 xml 파일의 namespace에는 
+	반드시 mapper 역할을 하는 인터페이스의 풀 패키지 이름을 적어야 한다.
+ -->
+<mapper namespace="com.tjoeun.tag.dao.MybatisDAO">
+	
+	<!-- 리스트 아이템(트렌드)의 총 개수를 얻어온다 -->
+	<select id="selectCount" resultType="int">
+		select count(*) from trend
+	</select>
+	
+	<!-- 리스트(트렌드)를 얻어온다. -->
+	<select id="selectList" parameterType="java.util.HashMap" resultType="com.tjoeun.tag.vo.TrendVO">
+		select * from (
+			select rownum rnum, TT.* from( 
+				select * from trend order by tnum desc
+			) TT
+		) where rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<!-- 1개의 아이템(트렌드)에 달린 댓글의 총 개수를 얻어온다 -->
+	<select id="selectCommentCount" parameterType="int" resultType="int">
+		select count(*) from tcomment where tnum = #{tnum}
+	</select>
+	
+	<!-- ================================== +수미 =================================== -->
+	
+	<select id="selectByTnum" parameterType="int" resultType="vo">
+		select * from trend where tnum = #{tnum}
+	</select>
+
+	<select id="selectCountComment" parameterType="int" resultType="int"><!-- selectCommentCount 이랑 중복 -->
+		select count(*) from tcomment where tnum = #{tnum}
+	</select>
+	
+	<select id="selectCommentList" parameterType="java.util.HashMap" resultType="co">
+		select * from (
+			select rownum rwnum, TT.* from( 
+				select * from tcomment where tnum = #{tnum} order by cnum desc
+			) TT
+		) where rwnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="selectWriterTitle" parameterType="java.util.HashMap" resultType="vo">
+		<![CDATA[
+			select * from (
+				select rownum rnum, TT.* from( 
+					select title, tnum from trend where writer=#{writer} and title != #{title} order by DBMS_RANDOM.RANDOM
+				) TT
+			) where rnum <= 5
+		]]>
+	</select>
+
+	<!-- 닉네임 변수 추가 -->
+	<insert id="insertComment" parameterType="co">
+		insert into tcomment (NICKNAME, USERNUM, cnum, tnum, memo, cdate)
+		values (#{nickname}, #{usernum},(select nvl(max(cnum), 0) + 1 from tcomment), #{tnum}, #{memo}, #{cdate})
+	</insert>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteComment" parameterType="int">
+		delete from tcomment where cnum = #{cnum}
+	</delete>
+	
+	<!-- 신고 처음인지 확인 -->
+	<select id="reportfirst" parameterType="java.util.HashMap" resultType="int">
+		select count(report) from mypage where usernum = #{usernum} and cnum = #{cnum}
+	</select>
+	
+	<!-- 댓글 신고 -->
+	<update id="insertTrendReport" parameterType="java.util.HashMap">
+		update tcomment set rnum = #{rnum} + 1 where cnum = #{cnum}
+	</update>
+	
+	<!-- report insert -->
+	<insert id="reportInsert" parameterType="java.util.HashMap">
+		insert into mypage (idx, usernum, cnum, report)
+		values ((select nvl(max(idx), 0) + 1 from mypage), #{usernum}, #{cnum}, 1)
+	</insert>
+	
+	<!-- 이전에 신고 눌렀는지 확인 -->
+	<select id="report" parameterType="java.util.HashMap" resultType="int">
+		select report from mypage where usernum = #{usernum} and cnum = #{cnum}
+	</select>
+	
+	<!-- report update -->
+	<update id="reportUpdate" parameterType="java.util.HashMap">
+		update mypage set report = 1 where usernum = #{usernum} and cnum = #{cnum}
+	</update>
+	
+	<!-- 스크랩 처음인지 확인 -->
+	<select id="scrapfirst" parameterType="java.util.HashMap" resultType="int">
+		select count(scrap) from mypage where usernum = #{usernum} and tnum = #{tnum}
+	</select>
+	
+	<!-- scrap insert -->
+	<insert id="scrapInsert" parameterType="com.tjoeun.tag.vo.Param">
+		<!-- insert into scrap (snum, tnum) values ((select nvl(max(snum), 0) + 1 from scrap), #{tnum}) -->
+		insert into mypage (idx, tnum, lnum, usernum, title, scrap, writer) 
+		values ((select nvl(max(idx), 0) + 1 from mypage), #{tnum}, #{lnum}, #{usernum}, #{title}, 1, #{writer})
+	</insert>
+	
+	<!-- 이전에 스크랩 눌렀는지 확인 -->
+	<select id="scrap" parameterType="java.util.HashMap" resultType="int">
+		select scrap from mypage where usernum = #{usernum} and tnum = #{tnum}
+	</select>
+	
+	<!-- scrap update -->
+	<update id="scrapUpdate" parameterType="java.util.HashMap">
+		update mypage set scrap = 1 where tnum = #{tnum} and usernum = #{usernum}
+	</update>
+	
+	<!-- scrap delete -->
+	<update id="scrapDelete" parameterType="java.util.HashMap">
+		update mypage set scrap = 0 where tnum = #{tnum} and usernum = #{usernum}
+	</update>
+	
+	<!-- 좋아요 처음인지 확인 -->
+	<select id="tlikefirst" parameterType="java.util.HashMap" resultType="int">
+		select count(tlike) from mypage where usernum = #{usernum} and tnum = #{tnum}
+	</select>
+	
+	<!-- 이전에 좋아요를 눌렀는지 확인 -->
+	<select id="tlike" parameterType="java.util.HashMap" resultType="int">
+		select tlike from mypage where usernum = #{usernum} and tnum = #{tnum}
+	</select>
+
+	<!-- 트렌드 좋아요수 -->
+	<update id="insertTrendLike" parameterType="java.util.HashMap">
+		update trend set lnum = #{lnum} + 1 where tnum = #{tnum}
+	</update>
+	
+	<!-- tlike insert -->
+	<insert id="tilkeInsert" parameterType="java.util.HashMap">
+		insert into mypage (idx, usernum, tnum, tlike, lnum)
+		values ((select nvl(max(idx), 0) + 1 from mypage), #{usernum}, #{tnum}, 1, #{lnum} + 1)
+	</insert>
+	
+	<!-- tlike update -->
+	<update id="tlikeUpdate" parameterType="java.util.HashMap">
+		update mypage set tlike = 1, lnum = #{lnum} + 1 where usernum = #{usernum} and tnum = #{tnum}
+	</update>
+	
+	<!-- 트렌드 좋아요 삭제 -->
+	<update id="deleteTrendLike" parameterType="java.util.HashMap">
+		update trend set lnum = #{lnum} - 1 where tnum = #{tnum}
+	</update>
+		
+	<!-- tlike delete -->
+	<update id="tlikeDelete" parameterType="java.util.HashMap">
+		update mypage set tlike = 0, lnum = #{lnum} - 1 where usernum = #{usernum} and tnum = #{tnum}
+	</update>
+	
+	<!-- 댓글 좋아요 처음인지 확인 -->
+	<select id="clikefirst" parameterType="java.util.HashMap" resultType="int">
+		select count(clike) from mypage where usernum = #{usernum} and cnum = #{cnum}
+	</select>
+	
+	<!-- 댓글 좋아요수 증가 -->
+	<update id="insertCoLike" parameterType="java.util.HashMap">
+		update tcomment set lcnum = #{lcnum} + 1 where cnum = #{cnum}
+	</update>
+	
+	<!-- 댓글 좋아요 insert -->
+	<insert id="clikeInsert" parameterType="java.util.HashMap">
+		insert into mypage (idx, usernum, cnum, clike)
+		values ((select nvl(max(idx), 0) + 1 from mypage), #{usernum}, #{cnum}, 1)
+	</insert>
+	
+	<!-- 이전에 댓글 좋아요 눌렀는지 확인 -->
+	<select id="clike" parameterType="java.util.HashMap" resultType="int">
+		select clike from mypage where cnum = #{cnum} and #{usernum} = #{usernum}
+	</select>
+	
+	<!-- clike update -->
+	<update id="clikeUpdate" parameterType="java.util.HashMap">
+		update mypage set clike = 1 where usernum = #{usernum} and cnum = #{cnum}
+	</update>
+	
+	<!-- 댓글 좋아요수 삭제 -->
+	<update id="deleteCoLike" parameterType="java.util.HashMap">
+		update tcomment set lcnum = #{lcnum} - 1 where cnum = #{cnum}
+	</update>
+	
+	<!-- clike delete -->
+	<update id="clikeDelete" parameterType="java.util.HashMap">
+		update mypage set clike = 0 where usernum = #{usernum} and cnum = #{cnum}
+	</update>
+	
+	<!-- 댓글 수정페이지 -->
+	<select id="selectCommentListCnum" parameterType="int" resultType="co">
+		select * from tcomment where cnum = #{cnum} order by cnum desc
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateComment" parameterType="com.tjoeun.tag.vo.Param">
+		update tcomment set memo = #{memo}, cdate = sysdate where cnum = #{cnum}
+	</update>
+	
+	<!-- ================================== +건희 =================================== -->
+	
+	<!-- 컨텐츠 개수를 얻어온다. -->
+	<select id="contentCount" resultType="int"><!-- selectCount / selectCountTrend 이랑 중복 -->
+		select count(*) from trend
+	</select>
+	
+	<!-- 컨텐츠(미리보기)를 불러옴 랜덤 20개 -->
+	<select id="contentList" resultType="vo">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from trend order by dbms_random.value
+				) AA where rownum <= 20
+			) where rnum >= 1
+		]]>
+	</select>
+	
+	<!-- 컨텐츠 검색 -->
+	<select id="contentSearch" parameterType="java.lang.String" resultType="vo">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from trend where title like '%'||#{searchval}||'%' order by dbms_random.value
+				) AA where rownum <= 20
+			) where rnum >= 1
+		]]>
+	</select>
+	
+	<!-- ================================== +형빈 =================================== -->
+     <!-- 회원정보 insert -->
+	<insert id="SignUp" parameterType="vo">
+		insert into USERINFO(nickname,usernum,userid,pw,email,birth,jdate,bookmark,point)
+		values (#{nickname},10000+(userNum_seq.nextval),#{userid},#{pw},#{email},#{birth},#{jdate},'','0')
+	</insert>
+
+	<!-- 닉네임 중복 체크 -->
+	<select id="NickCheck" parameterType="uo" resultType="java.lang.Integer">
+		select COUNT(*) from USERINFO where NICKNAME=#{nickname}
+	</select>
+
+	<!-- 아이디 존재 여부 체크 -->
+	<select id="IdCheck" parameterType="uo" resultType="java.lang.Integer">
+		select COUNT(*) from USERINFO where USERID=#{userid}
+	</select>
+
+	<!-- 비밀번호 일치 여부 체크 -->
+	<select id="PwCheck" parameterType="uo" resultType="java.lang.Integer">
+		select COUNT(*) from USERINFO where USERID=#{userid} and pw=#{pw}
+	</select>
+
+	<!-- userid와 pw를 사용하여 회원정보 가져오기 -->
+	<select id="SignIn" parameterType="uo" resultType="uo">
+		select * from USERINFO where USERID=#{userid} and pw=#{pw}
+	</select>
+
+	<select id="Myinfo" parameterType="java.lang.String" resultType="uo">
+		select * from USERINFO where NICKNAME=#{nickname}
+	</select>
+	
+	<select id="MyComment" parameterType="java.lang.Integer" resultType="mcvo">
+		select * from TCOMMENT left join TREND on TCOMMENT.TNUM = TREND.TNUM where TCOMMENT.USERNUM=#{usernum} order by CDATE desc
+	</select>
+	
+	<select id="commentCnt" parameterType="java.lang.String" resultType="int">
+		select count(*) from TCOMMENT where NICKNAME=#{nickname}
+	</select>
+
+	<select id="MyScrap" parameterType="java.lang.Integer" resultType="vo">
+		select * from MYPAGE where USERNUM=#{usernum} and SCRAP=1
+	</select>
+
+	<select id="scrapCnt" parameterType="java.lang.Integer" resultType="int">
+		select count(*) from MYPAGE where USERNUM=#{usernum} and SCRAP=1
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
